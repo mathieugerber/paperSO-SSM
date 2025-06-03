@@ -1,7 +1,7 @@
 ################################################################################################################
 ##  Running this R script generates the plots in Figures 2-3 of the paper and save them in the folder "Figures"
-##  WARNING: The data used in the paper are not open accessed, and in thus R script data from Kaggle are used
-##           The data used below are not fro Bristol and cover another time period. 
+##  WARNING: The dataset used in the paper is not open access, and in this R script data from Kaggle are used
+##           The data used below are not from Bristol but for city of Portland (US).
 ## Remark: this R scirpt must be placed in you working directory.
 ################################################################################################################
 
