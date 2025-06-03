@@ -199,7 +199,7 @@ df<- data.frame(x=rep(long.x/1000,2), kval=rep(long.k,2), y1=c(long.v1,long.vv1)
 	
 
 p1 <- ggplot(df, aes(x = x, ymin = y1, ymax = y2)) +geom_ribbon(aes(fill = Algorithm, color = Algorithm), alpha=1)+
-	xlab("time (in thousands)") +ylab("prediction error")+ylim(0,max(c(max(long.v2),max(long.vv2), max(long.e1), max(long.e2))))+theme_bw()+
+	xlab("time t (in thousands)") +ylab("prediction error")+ylim(0,max(c(max(long.v2),max(long.vv2), max(long.e1), max(long.e2))))+theme_bw()+
        theme(axis.text=element_text(size=25, colour="black"),
         axis.title=element_text(size=25), legend.text=element_text(size=25))+
 	scale_fill_manual(values=c("Algo.2 q=3"="green", "Algo.2 q=4"="black", "Previous hour"="red","Previous day"="blue"))+
@@ -299,7 +299,7 @@ df<- data.frame(x=rep(long.x/1000,2), kval=rep(long.k,2), y1=c(long.v1,long.vv1)
 	
 
 p2 <- ggplot(df, aes(x = x, ymin = y1, ymax = y2)) +geom_ribbon(aes(fill = Algorithm, color = Algorithm), alpha=1)+
-	xlab("time (in thousands)") +ylab("prediction error")+ylim(0,max(c(max(long.v2),max(long.vv2), max(long.e1), max(long.e2))))+theme_bw()+
+	xlab("time t (in thousands)") +ylab("prediction error")+ylim(0,max(c(max(long.v2),max(long.vv2), max(long.e1), max(long.e2))))+theme_bw()+
        theme(axis.text=element_text(size=25, colour="black"),
         axis.title=element_text(size=25), legend.text=element_text(size=25))+
 	scale_fill_manual(values=c("Algo.2 q=3"="green", "Algo.2 q=4"="black", "Previous hour"="red","Previous day"="blue"))+
@@ -352,7 +352,7 @@ df<-data.frame(res=c(c(theta[,1]),c(theta[,2]) ,c(theta[,3]),c(theta[,4])),
 
 
 p1<-ggplot(data=df,  aes(x=axis, y=res)) + geom_line(linewidth=1.5)+
-	xlab("time (in thousands)") +ylab(expression(bold(hat(beta)["t,j"]^N))) +theme_bw()+
+	xlab("time t (in thousands)") +ylab(expression(bold(hat(beta)["t,j"]^N))) +theme_bw()+
         theme(legend.title=element_blank())+theme(legend.position="none")+
 	theme(axis.text=element_text(size=25, colour="black"),
         axis.title=element_text(size=25), axis.title.y = element_text(vjust =-2))+theme(legend.text=element_text(size=25))+

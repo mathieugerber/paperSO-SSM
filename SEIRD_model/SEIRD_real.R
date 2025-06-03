@@ -5,12 +5,6 @@ source("SEIRD_model/SEIRD_algorithms.R")
 ################################################################################################################
 ### Load and prepare data 
 data <- read.csv('Data/covid.csv')
-##select data for UK
-data<-data[data$country=='United Kingdom',]
-##Make obseravtions start on March 4, 2020
-data<-data[-(1:63),]
-##keep observations for 120 dats
-data<-data[1:120,]
 ##estimate size of UK population in 2020
 UK_pop <- 67886004
 ##observations used to fit the model
@@ -41,7 +35,8 @@ set.seed(9585)
  
 #create matrices to store the results
 datalength<-nrow(obs)
-d<-7		    
+d<-7		 
+burnIn<-(1:(b.val*datalength))   
 res1<-matrix(0,M.val,d)
 res2<-matrix(0,M.val,d)
 resR1<-matrix(0,M.val,datalength)
@@ -56,8 +51,8 @@ for(m in  1:M.val){
 	if(m==1){
 		write.table(Est$THETA,"SEIRD_model/SEIRD_results/A3-05_traj.txt")
 	}
-	res1[m,]<-Est$THETA[nrow(Est$THETA),]       ##last iterate
-	res2[m,]<-apply(Est$THETA,2,mean)	     ##average over all values
+	res1[m,]<-Est$THETA[nrow(Est$THETA),]       	      
+	res2[m,]<-apply(Est$THETA[-burnIn,],2,mean)	      
 	Est<- PF(obs,theta=res1[m,], N=20000, chi_theta=param,c_lambda=10^{2}, c_kappa=10^{2})
 	resR1[m,]<-Est$R #estimated R number
 	Est<- PF(obs,theta=res2[m,], N=20000, chi_theta=param,c_lambda=10^{2}, c_kappa=10^{2})
@@ -78,8 +73,8 @@ set.seed(9585)
  
 #create matrices to store the results
 datalength<-nrow(obs)
-d<-7		    
-nit_val<-n.it
+d<-7		  
+burnIn<-(1:(b.val*datalength))  
 res1<-matrix(0,M.val,d)
 res2<-matrix(0,M.val,d)
 resR1<-matrix(0,M.val,datalength)
@@ -95,8 +90,8 @@ for(m in  1:M.val){
 	if(m==m.save){
 		write.table(Est$THETA,"SEIRD_model/SEIRD_results/A3-11_traj.txt")
 	}
-	res1[m,]<-Est$THETA[nrow(Est$THETA),]       ##last iterate 
-	res2[m,]<-apply(Est$THETA,2,mean)	     ## average over all values
+	res1[m,]<-Est$THETA[nrow(Est$THETA),]       	##last iterate 
+	res2[m,]<-apply(Est$THETA[-burnIn,],2,mean)  ## average over all values
 	Est<- PF(obs,theta=res1[m,], N=20000, chi_theta=param,c_lambda=10^{2}, c_kappa=10^{2})
 	resR1[m,]<-Est$R
 	Est<- PF(obs,theta=res2[m,], N=20000, chi_theta=param,c_lambda=10^{2}, c_kappa=10^{2})

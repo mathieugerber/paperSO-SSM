@@ -227,7 +227,7 @@ p1<-p1+ theme(strip.text = element_text(size=25))
 
 
 p2<-ggplot(data=all2,  aes(x=axis, y=value, group=Algorithm,   colour=Algorithm, linetype=Algorithm)) + geom_line(linewidth=1.5)+theme_bw()+
-	xlab("time (in thousands)")+ylab("estimation error")+
+	xlab("time t (in thousands)")+ylab("estimation error")+
 	scale_y_log10(limits =  c(0.0001, 15), breaks = c(10^{-3}, 10^{-2}, 10^{-1},10^{0},10),labels = trans_format("log10", math_format(10^.x)))+#,labels = c("","","","",""))+
 	scale_x_continuous(breaks = c(1,3,5,7,9))+
 	scale_linetype_manual(values=rep(1,8))+scale_color_manual(values=c("darkolivegreen","orange", "deeppink", "black","blue",  "red"))+

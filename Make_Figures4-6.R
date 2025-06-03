@@ -27,7 +27,10 @@ M.val<-50	#(M.val=50 in the paper)
 N.val<-5000	#(N.val=5000 in the paper)
 
 #number of passes through the data (n.it>1)
-n.it<-1000	#(n.it=1000 in the paper)
+n.it<-12000	#(n.it=2000 in the paper)
+
+#length of burn-in period for the averaging estimator 
+b.val<-1500    #(b.val=1500 in the paper)
 
 source("SEIRD_model/SEIRD_real.R")
 
@@ -38,10 +41,6 @@ source("SEIRD_model/SEIRD_real.R")
 ################################################################################################################
 
 data <- read.csv('Data/covid.csv')
-data<-data[data$country=='United Kingdom',]
-data<-data[-(1:63),]
-data<-data[1:120,]
-UK_pop <- 67886004
 WTO_R<-data$reproduction_rate
 datalength<-length(WTO_R)
 
@@ -51,7 +50,12 @@ datalength<-length(WTO_R)
 
 res1<-t(apply(read.table("SEIRD_model/SEIRD_results/A3-05_traj.txt"),1,as.numeric))
 nn<- nrow(res1)
-res2<-apply(res1,2,cumsum)/(1:nn)
+
+remove<-(1:(b.val*datalength)) ##burn-in  
+res2<-res1[-remove,]
+res2<-apply(res2,2,cumsum)/(1:nrow(res2))
+
+
 res3<-t(apply(read.table("SEIRD_model/SEIRD_results/A3-11_traj.txt"),1,as.numeric))
 npoints<-min(10000,nn)
 xaxis<-rep(0,nn)
@@ -59,11 +63,19 @@ for(i in 1:n.it){
 	xaxis[(120*(i-1)+1):(120*i)]<-(i-1)+1/(120:1)
 }
 select<-floor(seq(1,nn,length.out=npoints))
+select2<-floor(seq(1,nrow(res2),length.out=npoints))
+xaxis2<-rep(0,nrow(res2))
+for(i in 1:(n.it-b.val)){
+	xaxis2[(120*(i-1)+1):(120*i)]<-(i-1)+1/(120:1)
+}
+xaxis2<-xaxis2+b.val
+
 nn<-npoints
 res1<-res1[select,]
-res2<-res2[select,]
 res3<-res3[select,]
 xaxis<-xaxis[select]
+res2<-res2[select2,]
+xaxis2<-xaxis2[select2]
  
 all <- data.frame(
   Algorithm = factor(c(rep('A3-0.5', 7*nn), rep('AA3-0.5', 7*nn),rep('A3-1.1', 7*nn)), 
@@ -71,15 +83,14 @@ all <- data.frame(
   par=rep( c(rep("eta",nn), rep("gamma", nn), rep("mu", nn),rep("sigma[beta]", nn),
   	 rep("kappa", nn),rep("lambda[1]", nn),rep("lambda[2]", nn)),3),
   value = c(c(res1),c(res2),c(res3)),
-  axis	 	= c(rep(xaxis,21)/100)
+  axis	 	= c(rep(xaxis,7),rep(xaxis2,7),rep(xaxis,7) )/100
 )
 
 all$par<-factor(all$par, levels=c("eta", "gamma", "mu", "sigma[beta]", "kappa","lambda[1]","lambda[2]"))
 
 p1<-ggplot(data=all,  aes(x=axis, y=value, group=Algorithm,   colour=Algorithm, linetype=Algorithm)) + geom_line(linewidth=1.5)+theme_bw()+
 	xlab("number of passes through the data (in hundreds)")+ylab("estimated value")+
-	scale_x_continuous(breaks = seq(n.it/500,n.it/100, length.out=5)
-)+
+	scale_x_continuous(breaks = seq(n.it/400,n.it/100, length.out=4))+
 	scale_y_log10(
        limits = c(10^-2.7, 1),
        breaks = c(1e-3, 1e-2, 1e-1, 1e0),
